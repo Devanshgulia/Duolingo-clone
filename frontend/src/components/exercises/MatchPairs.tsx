@@ -13,6 +13,15 @@ interface MatchPairsProps {
   disabled?: boolean;
 }
 
+function shuffleArray<T>(array: T[]): T[] {
+  const arr = [...array];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
 export function MatchPairs({ exercise, onAnswerChange, onAutoComplete, disabled }: MatchPairsProps) {
   const [leftItems, setLeftItems] = useState<string[]>([]);
   const [rightItems, setRightItems] = useState<string[]>([]);
@@ -28,8 +37,11 @@ export function MatchPairs({ exercise, onAnswerChange, onAutoComplete, disabled 
       const data = exercise.options_json ? JSON.parse(exercise.options_json) : {};
       const pairs: Record<string, string> = data.pairs || {};
 
-      setLeftItems(data.left || Object.keys(pairs));
-      setRightItems(data.right || Object.values(pairs));
+      const rawLeft = data.left || Object.keys(pairs);
+      const rawRight = data.right || Object.values(pairs);
+
+      setLeftItems(shuffleArray(rawLeft));
+      setRightItems(shuffleArray(rawRight));
       setTargetPairs(pairs);
       setMatchedPairs({});
       setSelectedLeft(null);

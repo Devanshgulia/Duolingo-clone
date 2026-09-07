@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { Exercise } from '@/types';
 import { Volume2 } from 'lucide-react';
 import { speakText } from '@/lib/tts';
@@ -12,13 +13,26 @@ interface FillInBlankProps {
   disabled?: boolean;
 }
 
-export function FillInBlank({ exercise, selectedAnswer, onSelectAnswer, disabled }: FillInBlankProps) {
-  let options: string[] = [];
-  try {
-    options = exercise.options_json ? JSON.parse(exercise.options_json) : [];
-  } catch (e) {
-    options = [];
+function shuffleArray<T>(array: T[]): T[] {
+  const arr = [...array];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
   }
+  return arr;
+}
+
+export function FillInBlank({ exercise, selectedAnswer, onSelectAnswer, disabled }: FillInBlankProps) {
+  const [options, setOptions] = useState<string[]>([]);
+
+  useEffect(() => {
+    try {
+      const rawOptions: string[] = exercise.options_json ? JSON.parse(exercise.options_json) : [];
+      setOptions(shuffleArray(rawOptions));
+    } catch (e) {
+      setOptions([]);
+    }
+  }, [exercise]);
 
   const promptText = exercise.prompt.replace(/^(Fill in the blank:)\s*/i, '');
   const parts = promptText.split(/_____|____|___|__/);

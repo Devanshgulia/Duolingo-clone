@@ -25,6 +25,7 @@ export default function LessonPage() {
     lesson,
     currentExercise,
     progressPercent,
+    accuracyPercent,
     selectedAnswer,
     setSelectedAnswer,
     feedbackStatus,
@@ -159,6 +160,7 @@ export default function LessonPage() {
       {isComplete && completeResult && (
         <LessonCompleteModal
           result={completeResult}
+          accuracyPercent={accuracyPercent}
           onFinish={() => router.push('/learn')}
         />
       )}

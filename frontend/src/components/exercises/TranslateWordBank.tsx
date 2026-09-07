@@ -58,6 +58,15 @@ const WORD_HINTS: Record<string, string> = {
   buenas: 'good (fem.)',
 };
 
+function shuffleArray<T>(array: T[]): T[] {
+  const arr = [...array];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
 export function TranslateWordBank({ exercise, onAnswerChange, disabled }: TranslateWordBankProps) {
   const [bankWords, setBankWords] = useState<BankWord[]>([]);
   const [selectedWordIds, setSelectedWordIds] = useState<number[]>([]);
@@ -66,7 +75,8 @@ export function TranslateWordBank({ exercise, onAnswerChange, disabled }: Transl
   useEffect(() => {
     try {
       const words: string[] = exercise.options_json ? JSON.parse(exercise.options_json) : [];
-      const initialized: BankWord[] = words.map((text, idx) => ({
+      const shuffledWords = shuffleArray(words);
+      const initialized: BankWord[] = shuffledWords.map((text, idx) => ({
         id: idx,
         text,
         isUsed: false,

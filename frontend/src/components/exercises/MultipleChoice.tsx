@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Exercise } from '@/types';
 import { speakText } from '@/lib/tts';
 import { sound } from '@/lib/sound';
@@ -12,13 +12,28 @@ interface MultipleChoiceProps {
   disabled?: boolean;
 }
 
-export function MultipleChoice({ exercise, selectedAnswer, onSelectAnswer, disabled }: MultipleChoiceProps) {
-  let options: Array<{ id: string; text: string; subtext?: string }> = [];
-  try {
-    options = exercise.options_json ? JSON.parse(exercise.options_json) : [];
-  } catch (e) {
-    options = [];
+function shuffleArray<T>(array: T[]): T[] {
+  const arr = [...array];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
   }
+  return arr;
+}
+
+export function MultipleChoice({ exercise, selectedAnswer, onSelectAnswer, disabled }: MultipleChoiceProps) {
+  const [options, setOptions] = useState<Array<{ id: string; text: string; subtext?: string }>>([]);
+
+  useEffect(() => {
+    try {
+      const rawOptions: Array<{ id: string; text: string; subtext?: string }> = exercise.options_json
+        ? JSON.parse(exercise.options_json)
+        : [];
+      setOptions(shuffleArray(rawOptions));
+    } catch (e) {
+      setOptions([]);
+    }
+  }, [exercise]);
 
   // Keyboard shortcut support (1, 2, 3, 4)
   useEffect(() => {
