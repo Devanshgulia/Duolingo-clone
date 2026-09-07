@@ -5,7 +5,7 @@ import { Sidebar } from '@/components/layout/Sidebar';
 import { TopBar } from '@/components/layout/TopBar';
 import { api } from '@/lib/api';
 import { UserProfileStats, UserSummary } from '@/types';
-import { Flame, Zap, Shield, Trophy, Pencil, X, Search, Mail, ChevronRight } from 'lucide-react';
+import { Flame, Zap, Shield, Trophy, Pencil, Search, Mail, ChevronRight, Users, UserPlus } from 'lucide-react';
 import { DuoHappy } from '@/components/ui/Mascots';
 import { sound } from '@/lib/sound';
 import { useToast } from '@/components/ui/Toast';
@@ -15,8 +15,6 @@ export default function ProfilePage() {
   const [userSummary, setUserSummary] = useState<UserSummary | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [activeTab, setActiveTab] = useState<'following' | 'followers'>('following');
-  const [dismissedSuggestion, setDismissedSuggestion] = useState<boolean>(false);
-  const [celebrated, setCelebrated] = useState<boolean>(false);
   const { showToast } = useToast();
 
   const loadProfile = async () => {
@@ -38,12 +36,6 @@ export default function ProfilePage() {
   useEffect(() => {
     loadProfile();
   }, []);
-
-  const friends = [
-    { id: 1, name: 'Vinit', xp: 14494, color: '#1cb0f6' },
-    { id: 2, name: 'Vanshika', xp: 6365, color: '#ff4b4b' },
-    { id: 3, name: 'Anshika', xp: 1230, color: '#b865f8' },
-  ];
 
   return (
     <div className="min-h-screen bg-[#131f24] text-white flex select-none">
@@ -113,8 +105,8 @@ export default function ProfilePage() {
                     <p className="text-xs font-bold text-gray-500 mt-1">Joined January 2026</p>
 
                     <div className="flex items-center gap-4 mt-3 text-sm font-black">
-                      <span className="text-[#1cb0f6] hover:underline cursor-pointer">3 Following</span>
-                      <span className="text-[#1cb0f6] hover:underline cursor-pointer">3 Followers</span>
+                      <span className="text-gray-400">0 Following</span>
+                      <span className="text-gray-400">0 Followers</span>
                     </div>
                   </div>
 
@@ -181,59 +173,47 @@ export default function ProfilePage() {
                   </div>
                 </div>
 
-                {/* 4. Friend Suggestions Card */}
-                {!dismissedSuggestion && (
-                  <div>
-                    <div className="flex items-center justify-between mb-3">
-                      <h2 className="text-xl font-black text-white">Friend suggestions</h2>
-                      <button
-                        onClick={() => {
-                          sound.playClick();
-                          showToast('Search friends using the sidebar search!', 'info');
-                        }}
-                        className="text-xs font-black text-[#1cb0f6] hover:text-[#38bdf8] uppercase tracking-wider"
-                      >
-                        VIEW ALL
-                      </button>
-                    </div>
-
-                    <div className="bg-[#131f24] border-2 border-[#202f36] rounded-2xl p-4 flex items-center justify-between relative">
-                      <div className="flex items-center gap-3.5">
-                        <div className="w-11 h-11 rounded-full bg-[#b865f8] flex items-center justify-center text-white font-black text-lg shadow-sm">
-                          V
-                        </div>
-                        <div>
-                          <h4 className="font-black text-base text-white">vani jha</h4>
-                          <p className="text-xs font-bold text-gray-400">Followed by Vinit</p>
-                        </div>
-                      </div>
-
-                      <button
-                        onClick={() => setDismissedSuggestion(true)}
-                        className="text-gray-500 hover:text-gray-300 p-1 rounded-lg transition"
-                        title="Dismiss suggestion"
-                      >
-                        <X className="w-4 h-4" />
-                      </button>
-                    </div>
+                {/* 4. Friend Suggestions Card (Clean State) */}
+                <div>
+                  <div className="flex items-center justify-between mb-3">
+                    <h2 className="text-xl font-black text-white">Friend suggestions</h2>
                   </div>
-                )}
+
+                  <div className="bg-[#131f24] border-2 border-[#202f36] rounded-2xl p-6 flex flex-col items-center justify-center text-center">
+                    <div className="w-12 h-12 rounded-full bg-[#18394a] flex items-center justify-center text-[#1cb0f6] mb-3">
+                      <UserPlus className="w-6 h-6" />
+                    </div>
+                    <h4 className="font-black text-base text-white">No new suggestions</h4>
+                    <p className="text-xs font-bold text-gray-400 mt-1 max-w-sm">
+                      Learning is better with friends! Invite friends to compare weekly XP and complete quests together.
+                    </p>
+                    <button
+                      onClick={() => {
+                        sound.playClick();
+                        showToast('Invite link copied to clipboard!', 'success');
+                      }}
+                      className="duo-button duo-button-blue text-xs uppercase px-5 py-2.5 mt-4 font-black tracking-wider"
+                    >
+                      INVITE FRIENDS
+                    </button>
+                  </div>
+                </div>
               </>
             ) : null}
           </main>
 
-          {/* Right Column: Celebration, Following list, Add friends */}
+          {/* Right Column: Community, Following list, Add friends */}
           <aside className="hidden lg:block w-80 space-y-4 select-none">
-            {/* 1. Friend Celebration Card */}
+            {/* 1. Friend Updates / Community Card */}
             <div className="bg-[#131f24] border-2 border-[#202f36] rounded-3xl p-5 shadow-sm">
               <div className="flex items-start justify-between gap-3 mb-2">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-orange-200 border-2 border-orange-300 flex items-center justify-center text-lg">
-                    👧
+                  <div className="w-10 h-10 rounded-full bg-[#18394a] border-2 border-[#1cb0f6]/30 flex items-center justify-center text-[#1cb0f6]">
+                    <Users className="w-5 h-5" />
                   </div>
                   <div>
-                    <h5 className="font-black text-sm text-white">Vanshika</h5>
-                    <p className="text-[11px] font-bold text-gray-400">2 days</p>
+                    <h5 className="font-black text-sm text-white">Friend Quests</h5>
+                    <p className="text-[11px] font-bold text-gray-400">Team Milestones</p>
                   </div>
                 </div>
 
@@ -243,23 +223,17 @@ export default function ProfilePage() {
               </div>
 
               <p className="text-xs font-bold text-gray-300 mb-4 leading-relaxed">
-                Came back to learn English after 1 month!
+                Connect with friends to unlock collaborative monthly quests and shared celebrations!
               </p>
 
               <button
                 onClick={() => {
-                  sound.playVictory();
-                  setCelebrated(true);
+                  sound.playClick();
+                  showToast('Search for learners to add friends!', 'info');
                 }}
-                disabled={celebrated}
-                className={`w-full py-2.5 rounded-2xl border-2 font-black text-xs flex items-center justify-center gap-2 uppercase tracking-wider transition ${
-                  celebrated
-                    ? 'bg-amber-500/20 border-amber-500/50 text-[#ffc800]'
-                    : 'bg-[#202f36] border-[#37464f] hover:bg-[#2b3a42] text-white'
-                }`}
+                className="w-full py-2.5 rounded-2xl bg-[#202f36] border-2 border-[#37464f] hover:bg-[#2b3a42] text-white font-black text-xs flex items-center justify-center gap-2 uppercase tracking-wider transition"
               >
-                <span>🎉</span>
-                <span>{celebrated ? 'CELEBRATED!' : 'CELEBRATE'}</span>
+                <span>FIND FRIENDS</span>
               </button>
             </div>
 
@@ -278,7 +252,7 @@ export default function ProfilePage() {
                       : 'border-transparent text-gray-400 hover:text-white'
                   }`}
                 >
-                  FOLLOWING
+                  FOLLOWING (0)
                 </button>
                 <button
                   onClick={() => {
@@ -291,31 +265,21 @@ export default function ProfilePage() {
                       : 'border-transparent text-gray-400 hover:text-white'
                   }`}
                 >
-                  FOLLOWERS
+                  FOLLOWERS (0)
                 </button>
               </div>
 
-              {/* Friends List */}
-              <div className="p-3 space-y-2">
-                {friends.map((friend) => (
-                  <div
-                    key={friend.id}
-                    className="flex items-center justify-between p-2.5 rounded-2xl hover:bg-[#202f36] transition cursor-pointer"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div
-                        className="w-10 h-10 rounded-full flex items-center justify-center text-white font-black text-sm shadow-sm"
-                        style={{ backgroundColor: friend.color }}
-                      >
-                        {friend.name[0]}
-                      </div>
-                      <div>
-                        <h5 className="font-black text-sm text-white">{friend.name}</h5>
-                        <p className="text-[11px] font-bold text-gray-400">{friend.xp} XP</p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
+              {/* Empty Friends State */}
+              <div className="p-6 text-center text-gray-400 text-xs font-bold flex flex-col items-center">
+                <div className="w-12 h-12 rounded-full bg-[#19262c] border border-[#2b3a42] flex items-center justify-center text-gray-500 mb-2.5">
+                  <Users className="w-6 h-6" />
+                </div>
+                <p className="text-white font-black text-sm mb-1">
+                  {activeTab === 'following' ? 'Not following anyone yet' : 'No followers yet'}
+                </p>
+                <p className="text-gray-400 text-[11px] leading-relaxed">
+                  Search for learners below or invite friends to build your learning squad!
+                </p>
               </div>
             </div>
 
@@ -343,7 +307,7 @@ export default function ProfilePage() {
                 <button
                   onClick={() => {
                     sound.playClick();
-                    showToast('Share your referral link to earn 1 week of Super Duolingo free!', 'success');
+                    showToast('Referral link copied to clipboard!', 'success');
                   }}
                   className="w-full flex items-center justify-between p-3 rounded-2xl hover:bg-[#202f36] transition text-left"
                 >
